@@ -1,0 +1,14 @@
+# dbt compiled files & packages
+target/
+dbt_packages/
+logs/
+
+# DuckDB database files and temp locks
+*.duckdb
+*.duckdb.wal
+data/*.duckdb
+
+# OS & Environment files
+.DS_Store
+.env
+profiles.yml
