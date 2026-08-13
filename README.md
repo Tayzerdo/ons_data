@@ -1,4 +1,3 @@
-
 # ONS Hourly Generation by Power Plant – dbt & DuckDB Pipeline
 
 ## 📌 Project Overview
@@ -34,47 +33,39 @@ The goal is to build an end-to-end ELT/ETL pipeline using **Python** for initial
 
 ---
 
+
 ## 🏗️ Project Architecture & Data Flow
 
-[ ONS Open Data API/Files ]
-           │
-           ▼
-  ┌─────────────────────────────────────────────────────────┐
-  │                   dbt Pipeline                          │
-  ├─────────────────────────────────────────────────────────┤
-  │ 1. models/extract/  (Python Models)                     │
-  │    └── Fetches remote CSV/parquet files & writes raw    │
-  │                                                         │
-  │ 2. models/raw/      (SQL Models)                        │
-  │    └── Materializes base tables directly in DuckDB      │
-  │                                                         │
-  │ 3. models/staging/  (SQL Models)                        │
-  │    └── Renames, casts datatypes, and cleans schema     │
-  │                                                         │
-  │ 4. models/marts/    (SQL Models)                        │
-  │    └── Fact & dimension tables for business analysis   │
-  └─────────────────────────────────────────────────────────┘
-           │
-           ▼
-    [ DuckDB Storage ]
+
+
+```mermaid
+flowchart TD
+    A[☁️ ONS Open Data / S3 Bucket] --> B[🐍 1. models/extract - Python Models]
+    B --> C[🗄️ 2. models/raw - SQL Base Tables]
+    C --> D[🧹 3. models/staging - Cleaning & Type Casting]
+    D --> E[📊 4. models/marts - Facts & Dimensions]
+    E --> F[(🦆 DuckDB Storage Engine)]
+```
 
 
 ## 📁 Directory Structure
 
+```text
 .
-├── analyses/              # Ad-hoc SQL queries (not materialized as models)
-├── data/                  # Local storage for raw files or DuckDB database
-├── logs/                  # dbt execution logs
-├── macros/                # Custom SQL macros
-├── models/                # Core dbt transformation pipeline
-│   ├── extract/           # Python models (.py) handling data extraction from ONS
-│   ├── raw/               # SQL models defining base/landing raw structures
-│   ├── staging/           # SQL models for cleaning, renaming & type casting
-│   └── marts/             # SQL models for final fact and dimension analytical tables
+├── analyses/              # Ad-hoc SQL queries
+├── data/                  # Local DuckDB database location
+├── logs/                  # dbt logs
+├── macros/                # Custom Jinja/SQL macros
+├── models/                # Core dbt transformations
+│   ├── extract/           # Python models (.py) handling S3 extraction
+│   ├── raw/               # SQL models for base raw structures
+│   ├── staging/           # SQL models for cleaning & type casting
+│   └── marts/             # Final analytical fact/dimension models
 ├── seeds/                 # Static CSV reference files
-├── snapshots/             # Slowly Changing Dimensions (SCD Type 2) tracking
-├── target/                # dbt compiled code and manifest files
+├── snapshots/             # SCD Type 2 tracking
+├── target/                # dbt compiled output
 ├── tests/                 # Custom data quality tests
 ├── .gitignore
-├── dbt_project.yml        # dbt project configuration
+├── dbt_project.yml        # dbt project settings
 └── README.md
+```
