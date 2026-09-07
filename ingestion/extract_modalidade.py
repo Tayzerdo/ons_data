@@ -6,7 +6,7 @@ ONS_MODALIDADE_URL = (
     "dataset/modalidade_usina/MODALIDADE_USINA.parquet"
 )
 
-DB_PATH = "data/ons.duckdb"
+DB_PATH = "data/ons_data.duckdb"
 
 
 def extract_modalidade() -> pd.DataFrame:

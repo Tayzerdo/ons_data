@@ -8,7 +8,7 @@ import duckdb
 
 ONS_PREFIX = "dataset/geracao_usina_2_ho"
 
-DB_PATH = "data/ons.duckdb"
+DB_PATH = "data/ons_data.duckdb"
 
 
 def get_generation_files() -> pd.DataFrame:
