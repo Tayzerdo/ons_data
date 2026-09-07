@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: ons_raw
+    schema: raw
+    description: "Raw data ingested from ONS into DuckDB."
+
+    tables:
+      - name: generation
+        description: "Hourly power generation by plant from ONS."
+
+      - name: modalidade_usina
+        description: "Power plant modality classification from ONS."
