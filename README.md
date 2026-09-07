@@ -1,71 +1,61 @@
-# ONS Hourly Generation by Power Plant – dbt & DuckDB Pipeline
+
+# ONS Hourly Generation by Power Plant — Data Engineering Pipeline
 
 ## 📌 Project Overview
 
-This project processes open data from the **ONS (Operador Nacional do Sistema Elétrico)** regarding **Hourly Power Generation by Plant** (*Geração por Usina em Base Horária*).
+This project builds an end-to-end data engineering pipeline using open data from the  **ONS (Operador Nacional do Sistema Elétrico)** .
 
-The goal is to build an end-to-end ELT/ETL pipeline using **Python** for initial data extraction, **DuckDB** as an embedded OLAP storage engine, and **dbt (data build tool)** for data transformation, testing, lineage management, and documentation.
+The main dataset contains  **hourly electricity generation by power plant** , allowing the project to explore electricity generation patterns in Brazil while providing a practical environment to develop and demonstrate data engineering skills.
+
+The project is designed around a modern data pipeline architecture using:
+
+* 🐍 **Python** — data extraction and ingestion
+* 🦆 **DuckDB** — local analytical database and raw data storage
+* 🔧 **dbt** — data transformation, testing, documentation and lineage
+* 🛫 **Airflow** — pipeline orchestration *(planned)*
+* 📊 **Tableau** — data visualization and analytics *(planned)*
+
+The project is being developed incrementally, with the objective of eventually creating a fully automated and reproducible pipeline.
 
 ---
 
 ## 📊 Dataset Context
 
-* **Source:** ONS (Operador Nacional do Sistema Elétrico) Open Data Portal
-* **Granularity:** Hourly power generation per plant, plant cluster, or group of small power plants.
-* **Scope & Grouping:**
-  * **2000–2021:** Data files are grouped annually (one file per year).
-  * **2022–Present:** Data files are grouped monthly (one file per month/year).
-* **Plant Classification Breakdown:**
-  * **Type II-C:** Plant sets/clusters established through Operational Adjustments (*Ajustamentos Operativos*), following Submodule 7.2 of the Network Procedures (*Procedimentos de Rede*), available in the MPO.
-  * **Type III:** Groups of small power plants that do not interact directly with ONS; data for these represents estimated/forecasted generation.
-* **Data Refresh Note:** The source data undergoes recurring consistency processes, meaning historical data may be periodically updated at the source after initial publication.
+### Hourly Generation by Power Plant
+
+**Source:** ONS Open Data Portal
+
+**Dataset:**`<span>Geração por Usina em Base Horária</span>`
+
+The dataset contains hourly electricity generation information at plant level, including generation from individual plants, plant clusters and groups of small power plants.
+
+### Data coverage
+
+* **2000–2021:** Files are generally grouped by year.
+* **2022–Present:** Files are generally grouped by month.
+
+The ONS source may also perform consistency processes that update historical data after the original publication. Therefore, the ingestion pipeline needs to account for files that may have been modified after their initial ingestion.
+
+### Plant classification
+
+The ONS dataset includes different types of plant/group classifications, including:
+
+* **Type II-C:** Plant sets/clusters established through operational adjustments.
+* **Type III:** Groups of small power plants that do not interact directly with ONS; generation data may represent estimated or forecasted generation.
 
 ---
 
-## 🛠️ Tech Stack & Architecture
+# 🏗️ Architecture
 
-* **Extraction & Ingestion (Python):** Python scripts handle fetching remote files from ONS, downloading historical annual and monthly batches, and staging initial raw data.
-* **Storage & Analytical Engine (DuckDB):** Lightweight, high-performance columnar database used to store raw staging data and power analytical queries locally.
-* **Data Transformation (dbt Core + `dbt-duckdb`):**
-  * Manages SQL transformations across Staging, Intermediate, and Mart layers.
-  * Incorporates **dbt Python models** where complex Python transformations/data manipulation are required within the ETL pipeline.
-  * Enforces data quality via automated testing and schema documentation.
+The project follows a separation of responsibilities between ingestion, storage and transformation.
 
----
-
-
-## 🏗️ Project Architecture & Data Flow
-
-
-
-```mermaid
-flowchart TD
-    A[☁️ ONS Open Data / S3 Bucket] --> B[🐍 1. models/extract - Python Models]
-    B --> C[🗄️ 2. models/raw - SQL Base Tables]
-    C --> D[🧹 3. models/staging - Cleaning & Type Casting]
-    D --> E[📊 4. models/marts - Facts & Dimensions]
-    E --> F[(🦆 DuckDB Storage Engine)]
 ```
+flowchart TD
+    A[☁️ ONS Open Data / S3] --> B[🐍 Python Ingestion]
 
+    B --> C[(🦆 DuckDB)]
 
-## 📁 Directory Structure
+    C --> D[🧹 dbt Staging]
 
-```text
-.
-├── analyses/              # Ad-hoc SQL queries
-├── data/                  # Local DuckDB database location
-├── logs/                  # dbt logs
-├── macros/                # Custom Jinja/SQL macros
-├── models/                # Core dbt transformations
-│   ├── extract/           # Python models (.py) handling S3 extraction
-│   ├── raw/               # SQL models for base raw structures
-│   ├── staging/           # SQL models for cleaning & type casting
-│   └── marts/             # Final analytical fact/dimension models
-├── seeds/                 # Static CSV reference files
-├── snapshots/             # SCD Type 2 tracking
-├── target/                # dbt compiled output
-├── tests/                 # Custom data quality tests
-├── .gitignore
-├── dbt_project.yml        # dbt project settings
-└── README.md
+    D --> E[📊 dbt Marts]
 ```
