@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+
+  - name: ons_raw
+    schema: raw
+
+    tables:
+
+      - name: modalidade_usina
+
+      - name: geracao_usina
