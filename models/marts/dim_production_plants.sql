@@ -4,4 +4,3 @@ with staging_data as (
 
 select *
 from staging_data
-limit 1
