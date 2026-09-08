@@ -17,7 +17,11 @@ clean-targets:
 
 models:
   ons_data:
+
     staging:
+      +materialized: view
+
+    intermediate:
       +materialized: view
 
     marts:
