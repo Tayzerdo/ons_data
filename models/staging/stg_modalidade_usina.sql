@@ -4,8 +4,9 @@ WITH CTE AS (
 )
 
 SELECT
-    nom_usina AS dsc_plant_name,
+    id_ons AS id_ons_plant,
     ceg AS id_aneel_generation_enterprise,
+    nom_usina AS dsc_plant_name,
     nom_modalidadeoperacao AS dsc_operational_modality,
     val_potenciaautorizada AS val_authorized_power,
     sgl_centrooperacao AS cod_operational_center,
@@ -21,5 +22,5 @@ SELECT
         WHEN sts_aneel = 'O' THEN 'Other'
         ELSE 'Unknown'
     END AS dsc_aneel_status,
-    id_ons AS id_ons_plant
+    
 FROM CTE
