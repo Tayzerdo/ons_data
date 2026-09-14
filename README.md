@@ -392,7 +392,7 @@ The project is still under development.
 * [ ] Complete generation ingestion/change detection
 * [X] Complete historical generation mart
 * [X] Complete latest-hour generation model
-* [ ] Complete modalidade dimension
+* [X] Complete modalidade dimension
 * [ ] Add comprehensive dbt tests
 * [ ] Add dbt documentation
 * [ ] Add Airflow DAG

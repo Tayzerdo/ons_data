@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: stg_power_generation
+    columns:
+      - name: dtm_power_generation
+        test:
+          - not_null
+      - name: id_ons_plant
+        test:
+          - not_null
+
+  - name: stg_production_plants
+    columns:
+      - name: id_ons_plant
+        test:
+          - not_null
+          - unique
+      - name: id_aneel_generation_enterprise
+        test:
+          - not_null
+          - unique
+      - name: dsc_plant_name
+        test:
+          - not_null
+          - unique
