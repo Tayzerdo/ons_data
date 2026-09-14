@@ -24,5 +24,3 @@ SELECT
     END AS dsc_aneel_status,
     
 FROM CTE
-where 1=1
-and sts_aneel is not null
