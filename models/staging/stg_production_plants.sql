@@ -4,8 +4,8 @@ WITH CTE AS (
 )
 
 SELECT
-    id_ons AS id_ons_plant,
-    ceg AS id_aneel_generation_enterprise,
+    trim(lower(id_ons)) AS id_ons_plant,
+    trim(lower(ceg)) AS id_aneel_generation_enterprise,
     nom_usina AS dsc_plant_name,
     nom_modalidadeoperacao AS dsc_operational_modality,
     val_potenciaautorizada AS val_authorized_power,
