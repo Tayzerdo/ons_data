@@ -8,7 +8,7 @@ WITH CTE AS (
 SELECT
     din_instante AS dtm_power_generation,
     trim(lower(id_ons)) AS id_ons_plant,
-    trim(lower(ceg)) AS id_aneel_generation_enterprise,
+    trim(lower(nullif(ceg, '-'))) AS id_aneel_generation_enterprise,
     nom_tipousina AS dsc_plant_type,
     nom_tipocombustivel AS dsc_fuel_type,
     nom_usina AS dsc_plant_name,
