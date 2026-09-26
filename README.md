@@ -389,7 +389,7 @@ The project is still under development.
 * [X] Create raw modalidade table architecture
 * [X] Configure dbt sources
 * [X] Define staging layer
-* [X] Complete generation ingestion/change detection
+* [ ] Complete generation ingestion/change detection (backlog)
 * [X] Complete historical generation mart
 * [X] Complete latest-hour generation model
 * [X] Complete modalidade dimension
