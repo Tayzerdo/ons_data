@@ -7,7 +7,9 @@ max_date AS (
 )
 
 select 
-    SD.*
+    SD.dtm_power_generation,
+    SD.sk_generation_entity_key,
+    SD.val_power_generation
 from staging_data AS SD
 INNER JOIN max_date AS MD
     ON SD.dtm_power_generation = MD.dtm_power_generation

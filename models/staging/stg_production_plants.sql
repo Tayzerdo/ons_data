@@ -10,7 +10,7 @@ SELECT
         , ifnull(trim(lower(nullif(id_ons, '-'))), 'unknown')
         , '_' 
         , ifnull(trim(lower(nullif(ceg, '-'))), 'unknown')
-    ) AS generation_entity_key,
+    ) AS sk_generation_entity_key,
     trim(lower(nullif(id_ons, '-'))) AS id_ons_plant,
     trim(lower(nullif(ceg, '-'))) AS id_aneel_generation_enterprise,
     nom_usina AS dsc_plant_name,
