@@ -16,14 +16,14 @@ def get_generation_files() -> pd.DataFrame:
 
     return list_files(
         prefix=ONS_PREFIX,
-        extension=".xlsx",
+        extension=".parquet",
     )
 
 
 def download_file(row: pd.Series) -> pd.DataFrame:
     """Download and read a single ONS Excel file."""
 
-    return pd.read_excel(row["url"])
+    return pd.read_parquet(row["url"])
 
 
 def extract_generation() -> pd.DataFrame:

@@ -16,7 +16,7 @@ def get_s3_client():
     )
 
 
-def list_files(prefix: str, extension: str = ".xlsx") -> pd.DataFrame:
+def list_files(prefix: str, extension: str = ".parquet") -> pd.DataFrame:
     """
     List files available under an ONS S3 prefix.
 
@@ -31,6 +31,8 @@ def list_files(prefix: str, extension: str = ".xlsx") -> pd.DataFrame:
     )
 
     contents = response.get("Contents", [])
+
+    print(contents)
 
     records = []
 

@@ -17,6 +17,6 @@ SELECT
     END) as id_aneel_missing,
     ROUND( 
         100 * sum(case when id_aneel_generation_enterprise is null THEN 1 END)/count(*)
-    , 2 ) AS pct_id_aneel_missing,
+    , 2 ) AS pct_id_aneel_missing
 FROM data
 group by dsc_plant_presence
