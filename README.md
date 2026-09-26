@@ -378,31 +378,36 @@ It demonstrates concepts including:
 
 The project is still under development.
 
-### ✅ Completed / In Progress
+### ✅ Completed
 
-* [X] Connect to ONS public data
-* [X] Discover ONS S3 files
-* [X] Create Python ingestion structure
-* [X] Separate ingestion from dbt transformations
-* [X] Create DuckDB storage under `data/`
-* [X] Create raw generation table architecture
-* [X] Create raw modalidade table architecture
-* [X] Configure dbt sources
-* [X] Define staging layer
-* [ ] Complete generation ingestion/change detection (backlog)
-* [X] Complete historical generation mart
-* [X] Complete latest-hour generation model
-* [X] Complete modalidade dimension
-* [X] Add comprehensive dbt tests
-* [ ] Add dbt documentation
-* [ ] Add Airflow DAG
-* [ ] Automate the complete pipeline
-* [ ] Add pipeline logging and monitoring
-* [ ] Connect Tableau
-* [ ] Build analytical dashboards
-* [ ] Containerize the project with Docker
-* [ ] Add CI/CD
-* [ ] Add automated pipeline execution
+- [x] Connect to ONS public data
+- [x] Discover ONS S3 files
+- [x] Create Python ingestion structure
+- [x] Separate ingestion from dbt transformations
+- [x] Create DuckDB storage under `data/`
+- [x] Create raw generation table architecture
+- [x] Create raw modalidade table architecture
+- [x] Configure dbt sources
+- [x] Define staging layer
+
+### 🚧 In Progress
+
+- [ ] Historical generation mart
+- [ ] Latest-hour generation model
+- [ ] Modalidade dimension
+- [ ] Comprehensive dbt tests
+
+### 📋 Backlog
+
+- [ ] Complete generation incremental ingestion/change detection
+- [ ] dbt documentation
+- [ ] Airflow DAG
+- [ ] Pipeline logging and monitoring
+- [ ] Tableau
+- [ ] Analytical dashboards
+- [ ] Docker
+- [ ] CI/CD
+- [ ] Automated pipeline execution
 
 ---
 
