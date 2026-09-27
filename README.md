@@ -1,4 +1,3 @@
-
 # ONS Hourly Generation Data Platform
 
 ## 📌 Project Overview
@@ -163,19 +162,19 @@ ons_data/
 * Historical generation information dimension
 * Current generation entity version identification
 
+
 ### 🚧 In Progress
 
-* Historical generation fact
-* Production plant dimension
-* dbt tests
-* dbt documentation
+- Historical generation fact
+- Production plant dimension
+- dbt model validation and data quality tests
 
 ### 📋 Backlog
 
-* Ingestion change detection
-* Generation operational-stage classification
-* Airflow orchestration
-* Pipeline monitoring and logging
-* Tableau dashboards
-* CI/CD
-* Docker
+- Ingestion change detection
+- Generation operational-stage classification
+- Airflow orchestration
+- Pipeline monitoring and logging
+- Tableau dashboards
+- CI/CD
+- Docker

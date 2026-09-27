@@ -33,6 +33,6 @@ SELECT
         WHEN id_ons_plant is null and id_aneel_generation_enterprise is not null
             THEN concat(id_aneel_generation_enterprise,'_',replace(dsc_plant_name,' ',''))
         ELSE replace(dsc_plant_name,' ','')
-    END AS cod_generation_entity_key,
+    END AS cod_plant_entity_key,
     final.*
 FROM final

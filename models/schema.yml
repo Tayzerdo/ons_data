@@ -3,21 +3,13 @@ version: 2
 models:
   - name: stg_power_generation
     columns:
-      - name: dtm_power_generation
-        data_tests:
-          - not_null
-
-      - name: id_ons_plant
+      - name: cod_generation_entity_key
         data_tests:
           - not_null
 
   - name: stg_production_plants
     columns:
-      - name: id_ons_plant
-        data_tests:
-          - not_null
-
-      - name: id_aneel_generation_enterprise
+      - name: cod_plant_entity_key
         data_tests:
           - not_null
 
