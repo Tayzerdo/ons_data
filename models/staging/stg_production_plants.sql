@@ -1,33 +1,38 @@
 WITH CTE AS (
     SELECT *
     FROM {{ source('ons_raw', 'modalidade_usina') }}
+), final AS (
+    SELECT
+        trim(lower(nullif(id_ons, '-'))) AS id_ons_plant,
+        trim(lower(nullif(ceg, '-'))) AS id_aneel_generation_enterprise,
+        lower(trim(nom_usina)) AS dsc_plant_name,
+        nom_modalidadeoperacao AS dsc_operational_modality,
+        val_potenciaautorizada AS val_authorized_power,
+        sgl_centrooperacao AS cod_operational_center,
+        nom_pontoconexao AS dsc_connection_point,
+        id_estado AS id_state,
+        nom_estado AS dsc_state_name,
+        sts_aneel AS id_aneel_status,
+        CASE
+            WHEN sts_aneel = 'A' THEN 'Active'
+            WHEN sts_aneel = 'I' THEN 'Inactive'
+            WHEN sts_aneel = 'P' THEN 'Planned'
+            WHEN sts_aneel = 'C' THEN 'Cancelled'
+            WHEN sts_aneel = 'O' THEN 'Other'
+            ELSE 'Unknown'
+        END AS dsc_aneel_status
+        
+    FROM CTE
 )
-
 SELECT
-    concat(
-        replace(lower(trim(nom_usina)), ' ','') 
-        , '_' 
-        , ifnull(trim(lower(nullif(id_ons, '-'))), 'unknown')
-        , '_' 
-        , ifnull(trim(lower(nullif(ceg, '-'))), 'unknown')
-    ) AS cod_generation_entity_key,
-    trim(lower(nullif(id_ons, '-'))) AS id_ons_plant,
-    trim(lower(nullif(ceg, '-'))) AS id_aneel_generation_enterprise,
-    nom_usina AS dsc_plant_name,
-    nom_modalidadeoperacao AS dsc_operational_modality,
-    val_potenciaautorizada AS val_authorized_power,
-    sgl_centrooperacao AS cod_operational_center,
-    nom_pontoconexao AS dsc_connection_point,
-    id_estado AS id_state,
-    nom_estado AS dsc_state_name,
-    sts_aneel AS id_aneel_status,
-     CASE
-        WHEN sts_aneel = 'A' THEN 'Active'
-        WHEN sts_aneel = 'I' THEN 'Inactive'
-        WHEN sts_aneel = 'P' THEN 'Planned'
-        WHEN sts_aneel = 'C' THEN 'Cancelled'
-        WHEN sts_aneel = 'O' THEN 'Other'
-        ELSE 'Unknown'
-    END AS dsc_aneel_status
-    
-FROM CTE
+    CASE 
+        WHEN id_ons_plant is not null and id_aneel_generation_enterprise is not null
+            THEN concat(id_ons_plant,'_',id_aneel_generation_enterprise)
+        WHEN id_ons_plant is not null and id_aneel_generation_enterprise is null
+            THEN concat(id_ons_plant,'_',replace(dsc_plant_name,' ',''))
+        WHEN id_ons_plant is null and id_aneel_generation_enterprise is not null
+            THEN concat(id_aneel_generation_enterprise,'_',replace(dsc_plant_name,' ',''))
+        ELSE replace(dsc_plant_name,' ','')
+    END AS cod_generation_entity_key,
+    final.*
+FROM final
