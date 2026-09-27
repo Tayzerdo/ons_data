@@ -32,8 +32,6 @@ def list_files(prefix: str, extension: str = ".parquet") -> pd.DataFrame:
 
     contents = response.get("Contents", [])
 
-    print(contents)
-
     records = []
 
     for obj in contents:

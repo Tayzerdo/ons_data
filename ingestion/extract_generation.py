@@ -39,7 +39,7 @@ def extract_generation() -> pd.DataFrame:
         return pd.DataFrame()
 
 
-    files = files.tail(5)
+    #files = files.tail(30)
 
     dataframes = []
 

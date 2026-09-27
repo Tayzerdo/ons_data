@@ -4,6 +4,6 @@ with staging_data as (
 
 select 
     dtm_power_generation,
-    sk_generation_entity_key,
+    cod_generation_entity_key,
     val_power_generation
 from staging_data

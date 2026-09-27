@@ -5,5 +5,4 @@ with stg_power_generation as (
 select *
 from stg_power_generation
 where 1=1
-and dsc_subsystem_name not like 'SME%'
 

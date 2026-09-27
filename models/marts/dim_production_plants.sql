@@ -4,4 +4,3 @@ with staging_data as (
 
 select *
 from staging_data
---where id_ons_plant = 'pislb1'
