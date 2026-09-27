@@ -1,199 +1,124 @@
-# ONS Hourly Generation by Power Plant — Data Engineering Pipeline
+
+# ONS Hourly Generation Data Platform
 
 ## 📌 Project Overview
 
-This project builds an end-to-end data engineering pipeline using open data from the **ONS (Operador Nacional do Sistema Elétrico)**.
+This project builds an end-to-end data pipeline using hourly electricity generation data from the ONS (Operador Nacional do Sistema Elétrico).
 
-The main dataset contains **hourly electricity generation by power plant**, allowing the project to explore electricity generation patterns in Brazil while providing a practical environment to develop and demonstrate data engineering skills.
+The goal is to transform raw ONS data into reliable analytical datasets using a modern data engineering / analytics engineering architecture.
 
-The project is designed around a modern data pipeline architecture using:
+### Tech Stack
 
 * 🐍 **Python** — data extraction and ingestion
-* 🦆 **DuckDB** — local analytical database and raw data storage
-* 🔧 **dbt** — data transformation, testing, documentation and lineage
-* 🛫 **Airflow** — pipeline orchestration *(planned)*
-* 📊 **Tableau** — data visualization and analytics *(planned)*
-
-The project is being developed incrementally, with the objective of eventually creating a fully automated and reproducible pipeline.
-
----
-
-## 📊 Dataset Context
-
-### Hourly Generation by Power Plant
-
-**Source:** ONS Open Data Portal
-
-**Dataset:** `Geração por Usina em Base Horária`
-
-The dataset contains hourly electricity generation information at plant level, including generation from individual plants, plant clusters and groups of small power plants.
-
-### Data coverage
-
-* **2000–2021:** Files are generally grouped by year.
-* **2022–Present:** Files are generally grouped by month.
-
-The ONS source may also perform consistency processes that update historical data after the original publication. Therefore, the ingestion pipeline needs to account for files that may have been modified after their initial ingestion.
-
-### Plant classification
-
-The ONS dataset includes different types of plant/group classifications, including:
-
-* **Type II-C:** Plant sets/clusters established through operational adjustments.
-* **Type III:** Groups of small power plants that do not interact directly with ONS; generation data may represent estimated or forecasted generation.
+* 🦆 **DuckDB** — local raw data storage
+* 🔧 **dbt** — data transformation and modeling
+* 🛫 **Airflow** — orchestration *(planned)*
+* 📊 **Tableau** — visualization *(planned)*
 
 ---
 
 # 🏗️ Architecture
 
-The project follows a separation of responsibilities between ingestion, storage and transformation.
-
-```mermaid
-flowchart TD
-    A[☁️ ONS Open Data / S3] --> B[🐍 Python Ingestion]
-
-    B --> C[(🦆 DuckDB)]
-
-    C --> D[🧹 dbt Staging]
-
-    D --> E[📊 dbt Marts]
-
-    E --> F[📈 Tableau]
-
-    B -.-> G[🛫 Airflow]
-    G -.-> B
-    G -.-> D
+```text
+ONS Open Data
+      │
+      ▼
+Python Ingestion
+      │
+      ▼
+DuckDB Raw
+      │
+      ▼
+dbt Staging
+      │
+      ▼
+dbt Marts
+      │
+      ▼
+Analytics / Tableau
 ```
 
-### Responsibilities
+The responsibilities are separated between ingestion, storage and transformation:
 
-| Layer         | Technology | Responsibility                          |
-| ------------- | ---------- | --------------------------------------- |
-| Source        | ONS        | Public electricity generation data      |
-| Ingestion     | Python     | Discover, download and load source data |
-| Raw           | DuckDB     | Store source data locally               |
-| Staging       | dbt        | Clean, standardize and prepare data     |
-| Marts         | dbt        | Create analytical datasets              |
-| Orchestration | Airflow    | Automate and schedule the pipeline      |
-| Visualization | Tableau    | Build analytical dashboards             |
+* **Python** handles extraction and loading.
+* **DuckDB** stores the raw data locally.
+* **dbt** transforms the raw data into analytical models.
+* **Airflow** will eventually orchestrate the pipeline.
 
 ---
 
-# 🔄 Data Flow
+# 📊 Data
 
-The pipeline is being designed around the following flow:
+The main dataset contains hourly electricity generation by power plant.
 
-### 1. ONS → Python
+The ONS data currently covers:
 
-Python connects to the ONS public S3 bucket and identifies available source files.
+* **2000–2021:** yearly files
+* **2022–present:** monthly files
 
-The ingestion layer is responsible for:
+The source data can also be updated historically, which is considered by the ingestion design.
 
-* Discovering available files
-* Downloading ONS files
-* Handling annual and monthly files
-* Detecting new or modified files
-* Standardizing source columns
-* Loading data into DuckDB
-
-The ingestion code lives outside the dbt project.
-
-```text
-ingestion/
-├── __init__.py
-├── ons_s3.py
-├── load.py
-├── extract_generation.py
-└── extract_modalidade.py
-```
-
----
-
-### 2. Python → DuckDB
-
-DuckDB is used as the local storage and analytical engine.
-
-The project uses a single DuckDB database:
-
-```text
-data/
-└── ons_data.duckdb
-```
-
-The raw layer is created by the Python ingestion process.
-
-Current raw tables include:
+Current raw tables:
 
 ```text
 raw.generation
 raw.modalidade_usina
 ```
 
-Python is responsible for creating and updating these tables.
-
 ---
 
-### 3. DuckDB Raw → dbt Staging
+# 📐 Data Modeling
 
-dbt does not perform the initial extraction from ONS.
+The analytical layer currently separates generation measurements from generation entity information.
 
-Instead, dbt treats the DuckDB raw tables as **sources**.
+## Fact: `fct_power_generation`
 
-Example:
+**Grain:** one generation entity × one hour.
 
-```sql
-SELECT *
-FROM {{ source('ons_raw', 'generation') }}
-```
-
-The staging layer is responsible for preparing the raw data for analytical modeling.
+The fact contains:
 
 ```text
-models/
-└── staging/
-    ├── stg_geracao_usina.sql
-    └── stg_modalidade_usina.sql
+dtm_power_generation
+cod_generation_entity_key
+val_power_generation
 ```
 
-Staging models are intended to remain lightweight and are materialized as views.
+## Dimension: `dim_power_generation_information`
 
----
+This dimension contains descriptive information about generation entities and preserves historical versions.
 
-### 4. Staging → dbt Marts
+A new version is created when descriptive attributes change.
 
-The mart layer contains the datasets intended for analytical consumption.
-
-The planned structure includes:
+The model contains:
 
 ```text
-models/
-└── marts/
-    ├── fct_geracao_usina.sql
-    ├── fct_geracao_usina_current.sql
-    └── dim_modalidade_usina.sql
+cod_generation_entity_key
+id_ons_plant
+id_aneel_generation_enterprise
+dsc_plant_name
+dsc_plant_type
+dsc_fuel_type
+id_subsystem
+dsc_subsystem_name
+first_generation
+last_generation
+is_current
 ```
 
-#### `fct_geracao_usina`
+### Generation Entity Key
 
-Historical fact table containing the hourly generation records.
+`cod_generation_entity_key` is the analytical key used to connect the generation fact with the generation information dimension.
 
-This will be the main historical analytical dataset.
+The key follows this hierarchy:
 
-#### `fct_geracao_usina_current`
+| Identifier situation | Key                   |
+| -------------------- | --------------------- |
+| ONS + ANEEL          | ONS + ANEEL           |
+| ONS only             | ONS + plant name      |
+| ANEEL only           | ANEEL + plant name    |
+| Neither              | normalized plant name |
 
-Current/latest generation dataset.
-
-The current design uses the **latest available hour**:
-
-```text
-MAX(din_instante)
-```
-
-This allows the project to expose the most recent generation data without duplicating the complete historical table.
-
-#### `dim_modalidade_usina`
-
-Dimension table containing the classification/modality information for the power plants.
+When multiple historical versions exist for the same key, the version with the latest generation timestamp is identified as the current version through `is_current`.
 
 ---
 
@@ -203,267 +128,54 @@ Dimension table containing the classification/modality information for the power
 ons_data/
 │
 ├── data/
-│   └── ons_data.duckdb
-│
 ├── ingestion/
-│   ├── __init__.py
-│   ├── ons_s3.py
-│   ├── load.py
-│   ├── extract_generation.py
-│   └── extract_modalidade.py
 │
 ├── models/
-│   ├── sources.yml
-│   │
+│   ├── data_quality/
 │   ├── staging/
-│   │   ├── stg_geracao_usina.sql
-│   │   └── stg_modalidade_usina.sql
-│   │
 │   └── marts/
-│       ├── fct_geracao_usina.sql
-│       ├── fct_geracao_usina_current.sql
-│       └── dim_modalidade_usina.sql
 │
 ├── dags/
-│   └── ons_pipeline.py
-│
 ├── analyses/
 ├── macros/
 ├── seeds/
 ├── snapshots/
 ├── tests/
-├── target/
 │
 ├── dbt_project.yml
-├── README.md
-└── .gitignore
+└── README.md
 ```
-
-> The `target/` directory and local DuckDB database are development artifacts and should not be committed to Git.
-
----
-
-# 🛠️ Tech Stack
-
-## Python
-
-Used for the ingestion layer.
-
-Main responsibilities:
-
-* ONS S3 interaction
-* File discovery
-* File download
-* Change detection
-* Data standardization
-* Loading data into DuckDB
-
----
-
-## DuckDB
-
-Used as the project's local analytical database.
-
-Advantages for this project include:
-
-* Embedded database
-* No external database server required
-* Excellent analytical performance
-* SQL support
-* Easy integration with Python and dbt
-* Portable local development environment
-
-Database location:
-
-```text
-data/ons_data.duckdb
-```
-
----
-
-## dbt
-
-dbt is responsible for the transformation layer.
-
-Current architecture:
-
-```text
-raw
- ↓
-staging
- ↓
-marts
-```
-
-dbt is also intended to provide:
-
-* Data quality tests
-* Documentation
-* Model lineage
-* Incremental transformations
-* Analytical data modeling
-
-The raw layer is **not created by dbt**. It is populated by the Python ingestion process and exposed to dbt through `sources.yml`.
-
----
-
-## Airflow
-
-Airflow will eventually orchestrate the complete pipeline.
-
-The intended workflow is approximately:
-
-```text
-Discover ONS files
-       ↓
-Extract / Download
-       ↓
-Load Raw DuckDB
-       ↓
-dbt run
-       ↓
-dbt test
-       ↓
-Update analytical datasets
-```
-
-Airflow integration is still under development.
-
----
-
-## Tableau
-
-Tableau will eventually consume the analytical mart layer.
-
-Potential dashboards include:
-
-* Electricity generation overview
-* Generation by source/modality
-* Generation by power plant
-* Hourly generation trends
-* Historical generation
-* Latest generation status
-* Renewable vs non-renewable generation
-
-Tableau integration is still planned.
-
----
-
-# 🔍 Data Engineering Concepts Demonstrated
-
-This project is intentionally designed as a portfolio project for modern data engineering.
-
-It demonstrates concepts including:
-
-* API / cloud data extraction
-* S3 file discovery
-* Incremental ingestion
-* Change detection
-* ETL / ELT
-* Raw / staging / mart architecture
-* Data modeling
-* Fact and dimension tables
-* dbt sources
-* dbt transformations
-* dbt incremental models
-* Data quality testing
-* Data lineage
-* Local analytical databases
-* Pipeline orchestration
-* Business intelligence
 
 ---
 
 # 🚧 Project Roadmap
 
-The project is still under development.
-
 ### ✅ Completed
 
-- [x] Connect to ONS public data
-- [x] Discover ONS S3 files
-- [x] Create Python ingestion structure
-- [x] Separate ingestion from dbt transformations
-- [x] Create DuckDB storage under `data/`
-- [x] Create raw generation table architecture
-- [x] Create raw modalidade table architecture
-- [x] Configure dbt sources
-- [x] Define staging layer
+* ONS S3 data discovery
+* Python ingestion structure
+* DuckDB raw storage
+* Raw generation and production-plant tables
+* dbt source configuration
+* dbt staging models
+* Generation entity key strategy
+* Generation fact grain
+* Historical generation information dimension
+* Current generation entity version identification
 
 ### 🚧 In Progress
 
-- [ ] Historical generation mart
-- [ ] Latest-hour generation model
-- [ ] Modalidade dimension
-- [ ] Comprehensive dbt tests
+* Historical generation fact
+* Production plant dimension
+* dbt tests
+* dbt documentation
 
 ### 📋 Backlog
 
-- [ ] Complete generation incremental ingestion/change detection
-- [ ] dbt documentation
-- [ ] Airflow DAG
-- [ ] Pipeline logging and monitoring
-- [ ] Tableau
-- [ ] Analytical dashboards
-- [ ] Docker
-- [ ] CI/CD
-- [ ] Automated pipeline execution
-
----
-
-# 🎯 Final Architecture Goal
-
-The final project is intended to operate as an automated pipeline:
-
-```text
-                 ┌─────────────────┐
-                 │   ONS Open Data │
-                 └────────┬────────┘
-                          │
-                          ▼
-                 ┌─────────────────┐
-                 │ Python Ingestion│
-                 └────────┬────────┘
-                          │
-                          ▼
-                 ┌─────────────────┐
-                 │     DuckDB      │
-                 │   Raw Layer     │
-                 └────────┬────────┘
-                          │
-                          ▼
-                 ┌─────────────────┐
-                 │      dbt        │
-                 │    Staging      │
-                 └────────┬────────┘
-                          │
-                          ▼
-                 ┌─────────────────┐
-                 │      dbt        │
-                 │      Marts      │
-                 └────────┬────────┘
-                          │
-                ┌─────────┴─────────┐
-                ▼                   ▼
-        ┌──────────────┐    ┌──────────────┐
-        │   Tableau    │    │   Analytics  │
-        │  Dashboards  │    │    / SQL     │
-        └──────────────┘    └──────────────┘
-
-                  ▲
-                  │
-          ┌───────┴───────┐
-          │    Airflow    │
-          │ Orchestration │
-          └───────────────┘
-```
-
----
-
-# 📚 Project Objective
-
-The objective is not only to analyze ONS electricity generation data, but to build a realistic **end-to-end data engineering project** that demonstrates how raw public data can be transformed into reliable analytical datasets.
-
-The project is being developed incrementally, with emphasis on:
-
-**reproducibility → data quality → automation → scalability → analytics.**
+* Ingestion change detection
+* Generation operational-stage classification
+* Airflow orchestration
+* Pipeline monitoring and logging
+* Tableau dashboards
+* CI/CD
+* Docker
