@@ -6,10 +6,12 @@ models:
       - name: cod_generation_entity_key
         data_tests:
           - not_null
-        columns:
-          - name: dtm_power_generation
-            data_tests:
-              - unique
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments: # available in v1.10.5 and higher. Older versions can set the <argument_name> as the top-level property.
+            combination_of_columns:
+              - cod_generation_entity_key
+              - dtm_power_generation
 
   - name: stg_production_plants
     columns:
