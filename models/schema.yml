@@ -9,6 +9,9 @@ models:
       - name: val_power_generation
         data_tests:
           - not_null
+      - name: dtm_power_generation
+        data_tests:
+          - not_null
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments: # available in v1.10.5 and higher. Older versions can set the <argument_name> as the top-level property.
