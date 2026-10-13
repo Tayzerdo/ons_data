@@ -6,6 +6,9 @@ models:
       - name: cod_generation_entity_key
         data_tests:
           - not_null
+      - name: val_power_generation
+        data_tests:
+          - not_null
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments: # available in v1.10.5 and higher. Older versions can set the <argument_name> as the top-level property.
