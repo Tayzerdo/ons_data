@@ -28,3 +28,8 @@ models:
       - name: dsc_plant_name
         data_tests:
           - not_null
+  - name: dim_power_generation_information
+    columns:
+      - name: cod_generation_entity_key
+        data_tests:
+          - not_null
