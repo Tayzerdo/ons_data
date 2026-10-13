@@ -16,9 +16,13 @@ with staging_data as (
     from staging_data
     where 1=1
     group by all
-    order by cod_generation_entity_key, first_generation
 )
 
 select
-    cte.*
+    cte.*,
+    CASE
+        WHEN row_number() over (partition by cod_generation_entity_key order by last_generation desc) = 1
+    THEN true
+    else FALSE
+    end as is_current
 from cte
