@@ -1,4 +1,3 @@
-
 # ONS Hourly Generation Data Platform
 
 ## Project Overview
@@ -173,8 +172,11 @@ The `data/` directory contains local data artifacts. Generated files and local d
 ### In Progress
 
 - Historical generation fact validation
-- Production plant dimension investigation
 - dbt model validation and data quality tests
+
+### Blocked
+
+- Production plant dimension — source grain and the relationship between operational configurations, connection points, and plant entities are not yet sufficiently understood.
 
 ### Backlog
 
@@ -184,8 +186,6 @@ The `data/` directory contains local data artifacts. Generated files and local d
 - Pipeline logging and monitoring
 - Tableau dashboards
 - Docker and CI/CD
-
----
 
 ## Project Goal
 
