@@ -13,7 +13,7 @@ WITH CTE AS (
         lower(trim(nom_usina)) AS dsc_plant_name,
         id_subsistema AS id_subsystem,
         nom_subsistema AS dsc_subsystem_name,
-        val_geracao AS val_power_generation
+        ifnull(cast(val_geracao as int64),0) as val_power_generation
     FROM CTE
 )
 select 

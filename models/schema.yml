@@ -28,8 +28,40 @@ models:
       - name: dsc_plant_name
         data_tests:
           - not_null
+  - name: dim_production_plants
+    columns:
+      - name: cod_plant_entity_key
+        data_tests:
+          - not_null
+
+      - name: dsc_plant_name
+        data_tests:
+          - not_null
   - name: dim_power_generation_information
     columns:
       - name: cod_generation_entity_key
+        data_tests:
+          - not_null
+
+  - name: fct_power_generation_current
+    columns:
+      - name: cod_generation_entity_key
+        data_tests:
+          - not_null
+      - name: val_power_generation
+        data_tests:
+          - not_null
+      - name: dtm_power_generation
+        data_tests:
+          - not_null
+  - name: fct_power_generation
+    columns:
+      - name: cod_generation_entity_key
+        data_tests:
+          - not_null
+      - name: val_power_generation
+        data_tests:
+          - not_null
+      - name: dtm_power_generation
         data_tests:
           - not_null
