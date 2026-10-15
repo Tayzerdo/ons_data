@@ -26,4 +26,3 @@ select
     else FALSE
     end as is_current
 from cte
-where cod_generation_entity_key='amelc_ute.pe.am.027120-9.01'
