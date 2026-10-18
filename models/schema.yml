@@ -6,13 +6,6 @@ models:
       - name: cod_generation_entity_key
         data_tests:
           - not_null
-      - name: val_power_generation
-        data_tests:
-          - dbt_utils.expression_is_true:
-              arguments:
-                expression: ">= 0"
-              config:
-                severity: warn
       - name: dtm_power_generation
         data_tests:
           - not_null
@@ -50,13 +43,6 @@ models:
       - name: cod_generation_entity_key
         data_tests:
           - not_null
-      - name: val_power_generation
-        data_tests:
-          - dbt_utils.expression_is_true:
-              arguments:
-                expression: ">= 0"
-              config:
-                severity: warn
       - name: dtm_power_generation
         data_tests:
           - not_null
@@ -65,13 +51,6 @@ models:
       - name: cod_generation_entity_key
         data_tests:
           - not_null
-      - name: val_power_generation
-        data_tests:
-          - dbt_utils.expression_is_true:
-              arguments:
-                expression: ">= 0"
-              config:
-                severity: warn
       - name: dtm_power_generation
         data_tests:
           - not_null

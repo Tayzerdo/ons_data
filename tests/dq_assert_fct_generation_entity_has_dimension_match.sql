@@ -3,7 +3,7 @@ with fct_power_generation as (
     from {{ ref('fct_power_generation') }} -- your renamed model
 ), dim_power_generation_information as (
     select distinct cod_generation_entity_key as cod_generation_entity_key 
-    from {{ ref('dim_power_generation_information') }} -- your renamed model
+    from {{ ref('dim_power_generation_information') }}
 )
 
 
