@@ -176,13 +176,13 @@ The `data/` directory contains local data artifacts. Generated files and local d
 
 - Investigating generation-value quality warnings in staging and the fact table.
 - Refining data quality rules to distinguish blocking failures from non-blocking warnings.
-- Investigating missing, non-numeric, and negative generation measurements without assuming that missing values represent zero.
 - Validating historical generation coverage and documenting the limitations of the source data.
 - Reviewing and aligning README documentation with the implemented dbt models and tests.
 
 ### Blocked
 
 - **Production plant dimension:** The source grain and relationships between operational configurations, connection points, and plant entities remain unclear. The model is retained while the source semantics are investigated.
+- **Generation measurement semantics:** Clarification from the data provider is required to understand missing, non-numeric, and negative generation measurements before defining validation, transformation, or exclusion rules. Preserve the source values until the business meaning is confirmed.
 
 ### Backlog
 
