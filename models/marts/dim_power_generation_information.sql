@@ -1,7 +1,6 @@
 with staging_data as (
     select *
     from {{ ref('stg_power_generation') }}
-    --where id_ons_plant = 'papi' -- your renamed model
 ), cte AS (
     
     select 
