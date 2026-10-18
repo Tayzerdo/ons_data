@@ -155,42 +155,54 @@ The `data/` directory contains local data artifacts. Generated files and local d
 
 ---
 
-## Project Goal
-
 ## Project Roadmap
+
+Build a reproducible and maintainable pipeline that transforms public electricity generation data into reliable analytical datasets, with a focus on data quality, dimensional modeling, and automation.
 
 ### Completed
 
-- Discovered and ingested ONS generation data from S3.
-- Created the raw DuckDB tables for generation data and production plant information.
-- Configured dbt sources and staging models.
-- Implemented the generation entity key strategy using ONS ID, ANEEL ID, and normalized plant names.
-- Defined and validated the grain of `fct_power_generation`: one generation entity per hour.
-- Implemented `dim_power_generation_information` to track historical changes in selected descriptive attributes.
-- Implemented current-version identification for generation entities.
-- Added dbt tests for key uniqueness, duplicate generation records, dimension coverage, and current-version consistency.
-- Validated generation timestamp completeness through dbt data quality checks.
-- Confirmed that every generation entity in the fact table has a corresponding record in the historical information dimension.
+[](https://github.com/Tayzerdo/ons_data#completed)
+
+* Discovered and ingested ONS generation data from S3.
+* Created the raw DuckDB tables for generation data and production plant information.
+* Configured dbt sources and staging models.
+* Implemented the generation entity key strategy using ONS ID, ANEEL ID, and normalized plant names.
+* Defined and validated the grain of `fct_power_generation`: one generation entity per hour.
+* Implemented `dim_power_generation_information` to track historical changes in selected descriptive attributes.
+* Implemented current-version identification for generation entities.
+* Added dbt tests for key uniqueness, duplicate generation records, dimension coverage, and current-version consistency.
+* Validated generation timestamp completeness through dbt data quality checks.
+* Confirmed that every generation entity in the fact table has a corresponding record in the historical information dimension.
 
 ### In Progress
 
-- Investigating generation-value quality warnings in staging and the fact table.
-- Refining data quality rules to distinguish blocking failures from non-blocking warnings.
-- Validating historical generation coverage and documenting the limitations of the source data.
-- Reviewing and aligning README documentation with the implemented dbt models and tests.
+[](https://github.com/Tayzerdo/ons_data#in-progress)
+
+* Investigating generation-value quality warnings in staging and the fact table.
+* Refining data quality rules to distinguish blocking failures from non-blocking warnings.
+* Validating historical generation coverage and documenting the limitations of the source data.
+* Reviewing and aligning README documentation with the implemented dbt models and tests.
 
 ### Blocked
 
-- **Production plant dimension:** The source grain and relationships between operational configurations, connection points, and plant entities remain unclear. The model is retained while the source semantics are investigated.
-- **Generation measurement semantics:** Clarification from the data provider is required to understand missing, non-numeric, and negative generation measurements before defining validation, transformation, or exclusion rules. Preserve the source values until the business meaning is confirmed.
+[](https://github.com/Tayzerdo/ons_data#blocked)
+
+* **Production plant dimension:** The source grain and relationships between operational configurations, connection points, and plant entities remain unclear. The model is retained while the source semantics are investigated.
+* **Generation measurement semantics:** Clarification from the data provider is required to understand missing, non-numeric, and negative generation measurements before defining validation, transformation, or exclusion rules. Preserve the source values until the business meaning is confirmed.
 
 ### Backlog
 
-- Implement ingestion change detection and handling for historical source-file updates.
-- Investigate operational-stage classification and its effect on generation measurements.
-- Add Airflow orchestration.
-- Improve pipeline logging, monitoring, and failure handling.
-- Build Tableau dashboards on top of the validated analytical models.
-- Add Docker and CI/CD support.
+[](https://github.com/Tayzerdo/ons_data#backlog)
+
+* Implement ingestion change detection and handling for historical source-file updates.
+* Investigate operational-stage classification and its effect on generation measurements.
+* Add Airflow orchestration.
+* Improve pipeline logging, monitoring, and failure handling.
+* Build Tableau dashboards on top of the validated analytical models.
+* Add Docker and CI/CD support.
+
+## Project Goal
+
+[](https://github.com/Tayzerdo/ons_data#project-goal)
 
 Build a reproducible and maintainable pipeline that transforms public electricity generation data into reliable analytical datasets, with a focus on data quality, dimensional modeling, and automation.
