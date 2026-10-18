@@ -157,8 +157,6 @@ The `data/` directory contains local data artifacts. Generated files and local d
 
 ## Project Roadmap
 
-Build a reproducible and maintainable pipeline that transforms public electricity generation data into reliable analytical datasets, with a focus on data quality, dimensional modeling, and automation.
-
 ### Completed
 
 [](https://github.com/Tayzerdo/ons_data#completed)
