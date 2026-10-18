@@ -155,38 +155,42 @@ The `data/` directory contains local data artifacts. Generated files and local d
 
 ---
 
+## Project Goal
+
 ## Project Roadmap
 
 ### Completed
 
-- ONS S3 file discovery and ingestion structure
-- DuckDB raw storage
-- Raw generation and production plant tables
-- dbt source configuration and staging models
-- Generation entity key strategy
-- Generation fact grain validation against staging
-- Historical generation information dimension
-- Current-version identification logic
-- Initial dbt data quality tests
+- Discovered and ingested ONS generation data from S3.
+- Created the raw DuckDB tables for generation data and production plant information.
+- Configured dbt sources and staging models.
+- Implemented the generation entity key strategy using ONS ID, ANEEL ID, and normalized plant names.
+- Defined and validated the grain of `fct_power_generation`: one generation entity per hour.
+- Implemented `dim_power_generation_information` to track historical changes in selected descriptive attributes.
+- Implemented current-version identification for generation entities.
+- Added dbt tests for key uniqueness, duplicate generation records, dimension coverage, and current-version consistency.
+- Validated generation timestamp completeness through dbt data quality checks.
+- Confirmed that every generation entity in the fact table has a corresponding record in the historical information dimension.
 
 ### In Progress
 
-- Historical generation fact validation
-- dbt model validation and data quality tests
+- Investigating generation-value quality warnings in staging and the fact table.
+- Refining data quality rules to distinguish blocking failures from non-blocking warnings.
+- Investigating missing, non-numeric, and negative generation measurements without assuming that missing values represent zero.
+- Validating historical generation coverage and documenting the limitations of the source data.
+- Reviewing and aligning README documentation with the implemented dbt models and tests.
 
 ### Blocked
 
-- Production plant dimension — source grain and the relationship between operational configurations, connection points, and plant entities are not yet sufficiently understood.
+- **Production plant dimension:** The source grain and relationships between operational configurations, connection points, and plant entities remain unclear. The model is retained while the source semantics are investigated.
 
 ### Backlog
 
-- Ingestion change detection and historical file updates
-- Generation operational-stage classification
-- Airflow orchestration
-- Pipeline logging and monitoring
-- Tableau dashboards
-- Docker and CI/CD
-
-## Project Goal
+- Implement ingestion change detection and handling for historical source-file updates.
+- Investigate operational-stage classification and its effect on generation measurements.
+- Add Airflow orchestration.
+- Improve pipeline logging, monitoring, and failure handling.
+- Build Tableau dashboards on top of the validated analytical models.
+- Add Docker and CI/CD support.
 
 Build a reproducible and maintainable pipeline that transforms public electricity generation data into reliable analytical datasets, with a focus on data quality, dimensional modeling, and automation.
